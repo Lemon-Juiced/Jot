@@ -13,7 +13,6 @@ Defaults: Line numbers and guide are ON at column 90.
 ```
 
 ## Flags
-## Flags
 - `-g <col>` or `-g=<col>` : Enable vertical guide at column `<col>` (default `90`).
 - `-h` : Hide the help/keybindings line (help is shown by default).
 - `-n` : Enable line numbers (right-aligned, followed by a period, e.g. ` 10.`).
