@@ -210,17 +210,8 @@ inline void render(const vector<string>& lines, int row, int col, const string& 
 int main(int argc, char** argv) {
 	string filename;
 
-	// Initial content
+	// Initial content (single empty line by default)
 	vector<string> lines(1, "");
-	if (!filename.empty()) {
-		ifstream ifs(filename);
-		if (ifs) {
-			lines.clear();
-			string l;
-			while (std::getline(ifs, l)) lines.push_back(l);
-			if (lines.empty()) lines.push_back("");
-		}
-	}
 
 	// Install Ctrl Handler to avoid process termination on Ctrl+C
 	SetConsoleCtrlHandler(ConsoleHandler, TRUE);
@@ -297,6 +288,17 @@ int main(int argc, char** argv) {
 
 	// Set Ctrl-C handling according to mode (Unix-like: let Ctrl+C behave normally)
 	g_ignoreCtrlC = !unixMode;
+
+	// If the user provided a filename, attempt to open and load it now
+	if (!filename.empty()) {
+		ifstream ifs(filename);
+		if (ifs) {
+			lines.clear();
+			string l;
+			while (getline(ifs, l)) lines.push_back(l);
+			if (lines.empty()) lines.push_back("");
+		}
+	}
 
 	// Initial render with selected options
 	render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol);
