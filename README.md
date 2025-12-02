@@ -44,6 +44,9 @@ Short options can be combined (e.g. `-thu` is equivalent to `-t -h -u`).
 - `Ctrl+Z`: Undo.
 - `ESC`: Quit.
 
+- `Ctrl+F`: Find — open an inline Find prompt below the title/help. Matches are highlighted in yellow and the currently-selected target; use Up/Down to move between matches, `Enter` jumps the editor cursor to the selected match, `ESC` closes the Find prompt.
+- `Ctrl+R`: Replace — opens Find then Replace prompts (two reserved prompt lines). Matches are highlighted in yellow and the currently-selected replacement target is highlighted in red; use Up/Down to move the selection, type the replacement text and press `Enter` to replace the current selected match. `ESC` cancels Replace.
+
 ### Notes
 - Line numbers and the guide are visual only and are not written to the file.
 - The vertical guide is drawn by changing console cell attributes (visual overlay), not by inserting characters into the buffer.
