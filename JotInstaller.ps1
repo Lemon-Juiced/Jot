@@ -19,7 +19,8 @@ and adds/removes that folder from the current user's PATH.
 
 param(
 	[switch]$Uninstall,
-	[switch]$Force
+	[switch]$Force,
+	[switch]$Help
 )
 
 function Add-ToPath([string]$folder) {
@@ -47,7 +48,22 @@ function Remove-FromPath([string]$folder) {
 	Write-Host "Removed $folder from user PATH (if present)."
 }
 
+# Simple helper to check if a process named 'Jot' is running
+function Is-JotRunning {
+	try {
+		$p = Get-Process -Name 'Jot' -ErrorAction SilentlyContinue
+		return $p -ne $null
+	} catch {
+		return $false
+	}
+}
+
 function Perform-Install {
+	# If Jot is running, abort installation with a red error
+	if (Is-JotRunning) {
+		Write-Host "Error: Jot is currently running. Please close the application before installing." -ForegroundColor Red
+		exit 1
+	}
 	$destBase = Join-Path $env:LOCALAPPDATA 'Programs\Jot'
 	$sourceExePath = Join-Path $PSScriptRoot 'Jot.exe'
 	if (-not (Test-Path $sourceExePath)) {
@@ -69,7 +85,12 @@ function Perform-Install {
 }
 
 function Perform-Uninstall {
-	$destBase = Join-Path $env:LOCALAPPDATA 'Programs\Jot'
+	# If Jot appears to be running, abort uninstall with a red error
+	if (Is-JotRunning) {
+		Write-Host "Error: Jot is currently running. Please close the application before uninstalling." -ForegroundColor Red
+		exit 1
+	}
+	$destBase = Join-Path $env:LOCALAPPDATA 'Programs\\Jot'
 	if (Test-Path $destBase) {
 		try {
 			Remove-Item -Path $destBase -Recurse -Force
@@ -85,8 +106,20 @@ function Perform-Uninstall {
 }
 
 function Show-Help {
-	Write-Host "Usage: .\JotInstaller.ps1 [-Uninstall] [-Force]"
+	Write-Host "JotInstaller - simple user-scoped installer for Jot.exe"
+	Write-Host ""
+	Write-Host "Usage: .\JotInstaller.ps1 [options]"
+	Write-Host "  -Force       Overwrite existing installation when installing"
+	Write-Host "  -Uninstall   Remove the current user install of Jot"
+	Write-Host "  -Help        Show this help message"
+	Write-Host ""
+	Write-Host "Examples:";
+	Write-Host "  .\JotInstaller.ps1            # Install for current user (no admin required)"
+	Write-Host "  .\JotInstaller.ps1 -Force     # Force reinstall / overwrite"
+	Write-Host "  .\JotInstaller.ps1 -Uninstall # Uninstall for current user"
 }
+
+if ($Help) { Show-Help; exit }
 
 if ($Uninstall) { Perform-Uninstall; exit }
 

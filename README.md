@@ -61,6 +61,7 @@ Usage (run from the folder containing `Jot.exe` and `JotInstaller.ps1`):
 .\JotInstaller.ps1            # Install for current user (no admin required)
 .\JotInstaller.ps1 -Force     # Force reinstall / overwrite
 .\JotInstaller.ps1 -Uninstall # Remove install and PATH entry for current user
+.\JotInstaller.ps1 -Help      # Shows help message for the installer
 ```
 
 ### Notes:
