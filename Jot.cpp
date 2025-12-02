@@ -187,6 +187,22 @@ void render(const vector<string>& lines, int row, int col, const string& filenam
 }
 
 /**
+ * Clear the console screen (Windows) and reset cursor to home.
+ */
+void clear_console() {
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hOut == INVALID_HANDLE_VALUE) return;
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	if (!GetConsoleScreenBufferInfo(hOut, &csbi)) return;
+	DWORD cells = csbi.dwSize.X * csbi.dwSize.Y;
+	COORD home = {0,0};
+	DWORD written = 0;
+	FillConsoleOutputCharacter(hOut, ' ', cells, home, &written);
+	FillConsoleOutputAttribute(hOut, csbi.wAttributes, cells, home, &written);
+	SetConsoleCursorPosition(hOut, home);
+}
+
+/**
  * Backwards-compatible wrapper for older calls that use the 4-argument render.
  * 
  * @param lines The text buffer to render
@@ -416,8 +432,8 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	// Exit Text
-	cout << "\nExit. (Ctrl+S to save before quitting next time)\n";
+	// Clear the console so it appears as if `cls` or `clear` was run after exit.
+	clear_console();
 	return 0;
 }
 
