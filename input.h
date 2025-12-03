@@ -11,7 +11,7 @@ using namespace std;
 // Globals declared in main translation unit; input may read them.
 extern volatile bool g_ignoreCtrlC;
 extern bool g_showTitle;
-extern bool g_showHelp;
+extern bool g_showInfo;
 
 // Single-line input with basic editing
 bool input_line(string &out, const COORD &startCoord);

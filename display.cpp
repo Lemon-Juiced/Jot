@@ -35,11 +35,11 @@ void render(const vector<string>& lines, int row, int col, const string& filenam
     if (g_showTitle) {
         cout << "Jot - " << (filename.empty() ? "untitled" : filename) << "\n";
     }
-    if (g_showHelp) {
+    if (g_showInfo) {
         if (unixMode) {
-            cout << "Ctrl+K Copy Line  Ctrl+V Paste  Ctrl+D Duplicate  Ctrl+Z Undo  Ctrl+F Find  Ctrl+R Replace";
+            cout << "Ctrl+K Copy Line  Ctrl+V Paste  Ctrl+D Duplicate  Ctrl+Z Undo  Ctrl+F Find  Ctrl+R Replace Ctrl+X Delete Line";
         } else {
-            cout << "Ctrl+C Copy Line  Ctrl+V Paste  Ctrl+D Duplicate  Ctrl+Z Undo  Ctrl+F Find  Ctrl+R Replace";
+            cout << "Ctrl+C Copy Line  Ctrl+V Paste  Ctrl+D Duplicate  Ctrl+Z Undo  Ctrl+F Find  Ctrl+R Replace Ctrl+X Delete Line";
         }
         if (showLineNumbers) cout << "  (Line numbers on)";
         if (showGuide) cout << "  (Guide at col " << guideCol << ")";
@@ -51,7 +51,7 @@ void render(const vector<string>& lines, int row, int col, const string& filenam
         for (int r = 0; r < reservePromptLines; ++r) cout << "\n";
     }
 
-    int headerLines = (g_showTitle ? 1 : 0) + (g_showHelp ? 1 : 0);
+        int headerLines = (g_showTitle ? 1 : 0) + (g_showInfo ? 1 : 0);
     if (reservePromptLines > 0) headerLines += reservePromptLines;
     int maxLines = height - headerLines - 1; // reserve one bottom line
     if (maxLines < 1) maxLines = 1;
@@ -141,7 +141,7 @@ void highlight_matches_overlay(const vector<Match>& matches, const vector<string
     if (!GetConsoleScreenBufferInfo(hOut, &csbi)) return;
     int width = csbi.dwSize.X;
     int height = csbi.dwSize.Y;
-    int headerLines = (g_showTitle ? 1 : 0) + (g_showHelp ? 1 : 0);
+        int headerLines = (g_showTitle ? 1 : 0) + (g_showInfo ? 1 : 0);
     headerLines += headerOffset;
     int maxLines = height - headerLines - 1;
     if (maxLines < 1) maxLines = 1;
@@ -177,7 +177,7 @@ COORD draw_prompt(const string &promptText) {
     if (hOut == INVALID_HANDLE_VALUE) return COORD{0,0};
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     if (!GetConsoleScreenBufferInfo(hOut, &csbi)) return COORD{0,0};
-    int headerLines = (g_showTitle ? 1 : 0) + (g_showHelp ? 1 : 0);
+        int headerLines = (g_showTitle ? 1 : 0) + (g_showInfo ? 1 : 0);
     COORD p; p.X = 0; p.Y = (SHORT)headerLines;
     SetConsoleCursorPosition(hOut, p);
     // Write Prompt and Clear Rest of Line

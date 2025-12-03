@@ -10,7 +10,7 @@ using namespace std;
 // Globals declared in main translation unit; display/input may read them.
 extern volatile bool g_ignoreCtrlC;
 extern bool g_showTitle;
-extern bool g_showHelp;
+extern bool g_showInfo;
 
 // Render the text buffer to the console.
 void render(const vector<string>& lines, int row, int col, const string& filename, bool unixMode, bool showLineNumbers, bool showGuide, int guideCol, int reservePromptLines = 0);

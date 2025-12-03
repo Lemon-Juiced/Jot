@@ -18,7 +18,7 @@ using namespace std;
 // Global Settings 
 volatile bool g_ignoreCtrlC = true;
 bool g_showTitle = true;
-bool g_showHelp = true;
+bool g_showInfo = true;
 
 /**
  * Console control handler to manage Ctrl+C behavior.
@@ -68,7 +68,66 @@ int main(int argc, char** argv) {
     bool showGuide = true;
     int guideCol = 90;
 
-    // Parse args: accept combined short flags like -thu and -g with optional value
+    // Parse args: accept combined short flags like -itu and -g with optional value
+
+    // PASS 1: Detect immediate-exit special flags (-h, -v) and handle them.
+    bool wantHelp = false;
+    bool wantVersion = false;
+    for (int i = 1; i < argc; ++i) {
+        string a = argv[i];
+        if (a.empty()) continue;
+
+        // If token is exactly "-g", skip it and its value (next token) entirely
+        if (a == "-g") { if (i + 1 < argc) ++i; continue; }
+
+        // If token starts with -g (like -g80 or -g=80), skip this token
+        if (a.size() > 1 && a[0] == '-' && a[1] == 'g') continue;
+
+        // Only consider tokens that start with '-'
+        if (a.size() >= 2 && a[0] == '-') {
+            for (size_t j = 1; j < a.size(); ++j) {
+                char ch = a[j];
+                if (ch == 'h') wantHelp = true;
+                else if (ch == 'v') wantVersion = true;
+            }
+        }
+    }
+
+    if (wantVersion) {
+        cout << "Jot Version: " << __DATE__ << "\n";
+    }
+    if (wantHelp) {
+        if(wantVersion) cout << "\n";
+        cout << "Jot - Minimal Terminal Text Editor for Windows\n";
+        cout << "Usage: jot.exe [-u] [-n] [-g <col>] [-i] [-t] [-h] [-v] [filename]\n\n";
+        cout << "Flags:\n";
+        cout << "  -g <col> | -g=<col>   Enable vertical guide at column <col> (default 90)\n";
+        cout << "  -i                    Show the info/keybindings line\n";
+        cout << "  -n                    Enable line numbers\n";
+        cout << "  -t                    Hide the title line\n";
+        cout << "  -u                    Unix Mode (Ctrl+C acts like SIGINT; copy becomes Ctrl+K)\n";
+        cout << "Special Flags:\n";
+        cout << "  -h                    Show this help and exit\n";
+        cout << "  -v                    Show version (build date) and exit\n";
+    }
+    if (wantHelp || wantVersion) {
+        return 0;
+    }
+
+    // PASS 2: Early-effect flags (things that should be applied before other setup).
+    // Currently: -u (Unix mode) affects Ctrl-C handling.
+    for (int i = 1; i < argc; ++i) {
+        string a = argv[i];
+        if (a.size() >= 2 && a[0] == '-') {
+            for (size_t j = 1; j < a.size(); ++j) {
+                char ch = a[j];
+                if (ch == 'g') break; // -g consumes rest
+                if (ch == 'u') unixMode = true;
+            }
+        }
+    }
+
+    // PASS 3: Full parsing (flags, -g values, filename)
     for (int i = 1; i < argc; ++i) {
         string a = argv[i];
         if (a.size() >= 2 && a[0] == '-') {
@@ -87,13 +146,13 @@ int main(int argc, char** argv) {
                 continue;
             }
 
-            // Iterate short flags: e.g. -thu
+            // Iterate short flags: e.g. -tiu
             for (size_t j = 1; j < a.size(); ++j) {
                 char f = a[j];
                 switch (f) {
-                    case 'u': unixMode = true; break;
+                    case 'u': unixMode = true; break; // already applied in pass 2 too
                     case 'n': showLineNumbers = true; break;
-                    case 'h': g_showHelp = false; break; // Hide help line
+                    case 'i': g_showInfo = true; break; // Show info line
                     case 't': g_showTitle = false; break; // Hide title
                     case 'g': {
                         // -g Followed By Number in same token? Check Rest

@@ -2,6 +2,7 @@
 #include "fileio.h"
 #include "undo.h"
 #include "input.h"
+#include <algorithm>
 #include <conio.h>
 
 using namespace std;
@@ -71,6 +72,31 @@ void run_editor(vector<string>& lines, int& row, int& col, string& filename, boo
         }
         if (unixMode && c == 11) { // Ctrl+K Copy current line in Unix mode
             clipboard = lines[row];
+            render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, false);
+            continue;
+        }
+
+        // Cut / Delete current line: Ctrl+X
+        if (c == 24) { // Ctrl+X
+            // Save state for undo
+            push_undo(lines, row, col);
+            // Store the deleted line in the clipboard (cut semantics)
+            if (row >= 0 && row < (int)lines.size()) {
+                clipboard = lines[row];
+                lines.erase(lines.begin() + row);
+            } else {
+                clipboard.clear();
+            }
+
+            // Ensure there's always at least one line
+            if (lines.empty()) {
+                lines.push_back(string());
+                row = 0; col = 0;
+            } else {
+                if (row >= (int)lines.size()) row = (int)lines.size() - 1;
+                if (col > (int)lines[row].size()) col = (int)lines[row].size();
+            }
+
             render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, false);
             continue;
         }

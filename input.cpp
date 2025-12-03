@@ -70,7 +70,7 @@ void find_mode(vector<string> &lines, int &row, int &col, const string &filename
     vector<Match> matches;
     int sel = -1;
     while (true) {
-        int baseHeaderLines = (g_showTitle ? 1 : 0) + (g_showHelp ? 1 : 0);
+        int baseHeaderLines = (g_showTitle ? 1 : 0) + (g_showInfo ? 1 : 0);
         int reserveLines = 1;
         render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, reserveLines);
         int headerLines = baseHeaderLines;
@@ -150,7 +150,7 @@ void replace_mode(vector<string> &lines, int &row, int &col, const string &filen
     int sel = -1;
 
     while (true) {
-        int baseHeaderLines = (g_showTitle ? 1 : 0) + (g_showHelp ? 1 : 0);
+        int baseHeaderLines = (g_showTitle ? 1 : 0) + (g_showInfo ? 1 : 0);
         int reserveLines = 2;
         render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, reserveLines);
         int headerLines = baseHeaderLines;
@@ -193,7 +193,7 @@ void replace_mode(vector<string> &lines, int &row, int &col, const string &filen
     sel = -1;
     matches = find_all(lines, query);
     while (true) {
-        int baseHeaderLines = (g_showTitle ? 1 : 0) + (g_showHelp ? 1 : 0);
+        int baseHeaderLines = (g_showTitle ? 1 : 0) + (g_showInfo ? 1 : 0);
         int reserveLines = 2;
         render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, reserveLines);
         int headerLines = baseHeaderLines;
