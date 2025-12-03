@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     int row = 0, col = 0;
     string clipboard;
 
-   // Defaults: unixMode off by default, line numbers and guide ON by default, guide column at 90
+    // Defaults: unixMode off by default, line numbers and guide ON by default, guide column at 90
     bool unixMode = false;
     bool showLineNumbers = true;
     bool showGuide = true;
@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
     for (int i = 1; i < argc; ++i) {
         string a = argv[i];
         if (a.size() >= 2 && a[0] == '-') {
-            // handle -g=val or -gval
+            // Handle -g=val or -gval
             if (a.rfind("-g=", 0) == 0) {
                 showGuide = true;
                 string num = a.substr(3);
@@ -93,8 +93,8 @@ int main(int argc, char** argv) {
                 switch (f) {
                     case 'u': unixMode = true; break;
                     case 'n': showLineNumbers = true; break;
-                    case 'h': g_showHelp = false; break; // hide help line
-                    case 't': g_showTitle = false; break; // hide title
+                    case 'h': g_showHelp = false; break; // Hide help line
+                    case 't': g_showTitle = false; break; // Hide title
                     case 'g': {
                         // -g Followed By Number in same token? Check Rest
                         string rest = a.substr(j+1);
