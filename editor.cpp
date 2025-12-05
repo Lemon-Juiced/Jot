@@ -47,9 +47,33 @@ void run_editor(vector<string>& lines, int& row, int& col, string& filename, boo
         }
 
         // Control keys
-        if (c == 19) { // Ctrl+S Save
-            save_file(filename.empty() ? string("untitled.txt") : filename, lines);
-            render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, false);
+        if (c == 19) { // Ctrl+S Save (Ctrl+Shift+S => Save As)
+            bool shiftDown = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+            // If Shift is down OR there is no current filename, prompt for Save As
+            if (shiftDown || filename.empty()) {
+                render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, 1);
+                // Emphasize user must provide a filename
+                COORD promptCoord = draw_prompt("Save As (Required): ");
+                string newname;
+                if (input_line(newname, promptCoord)) {
+                    if (!newname.empty()) {
+                        save_file(newname, lines);
+                        filename = newname;
+                        // Flash confirmation
+                        render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, 1);
+                        draw_prompt(string("Saved to: ") + filename);
+                        Sleep(1000);
+                    }
+                }
+                render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, false);
+            } else {
+                // Regular save: save to existing filename and flash confirmation
+                save_file(filename, lines);
+                render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, 1);
+                draw_prompt(string("Saved to: ") + filename);
+                Sleep(1000);
+                render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, false);
+            }
             continue;
         }
 

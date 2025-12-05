@@ -46,6 +46,7 @@ Version information is currently just the date.
 - `Ctrl+D`: Duplicate current line (insert below).
 - `Ctrl+K`: Copy current line when started with `-u`.
 - `Ctrl+S`: Save (if no filename given, saves to `untitled.txt`).
+- `Ctrl+Shift+S`: Save as <filename>.
 - `Ctrl+V`: Paste clipboard at cursor (insert, does not overwrite).
 - `Ctrl+X`: Deletes the current line.
 - `Ctrl+Z`: Undo.
