@@ -49,6 +49,8 @@ Version information is currently just the date.
 - `Ctrl+V`: Paste clipboard at cursor (insert, does not overwrite).
 - `Ctrl+X`: Deletes the current line.
 - `Ctrl+Z`: Undo.
+- `Ctrl++`: Increase font size.
+- `Ctrl+-`: Decrease font size.
 - `ESC`: Quit.
 
 - `Ctrl+F`: Find — Open Find prompt below the title/help. Matches are highlighted in yellow and the currently-selected target; use Up/Down to move between matches, `Enter` jumps the editor cursor to the selected match, `ESC` closes the Find prompt.

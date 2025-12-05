@@ -4,6 +4,7 @@
 #include "input.h"
 #include <algorithm>
 #include <conio.h>
+#include <windows.h>
 
 using namespace std;
 
@@ -50,6 +51,35 @@ void run_editor(vector<string>& lines, int& row, int& col, string& filename, boo
             save_file(filename.empty() ? string("untitled.txt") : filename, lines);
             render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, false);
             continue;
+        }
+
+        // Ctrl + Plus / Ctrl + Minus — adjust console font size
+        {
+            bool ctrlDown = (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
+            bool plusKey = false;
+            bool minusKey = false;
+
+            // Check common keys: '+' and '-' characters
+            if (c == '+' || c == '=') plusKey = true; // '=' often with shift for '+'
+            if (c == '-') minusKey = true;
+
+            // Check numpad and OEM keys asynchronously as well
+            if ((GetAsyncKeyState(VK_ADD) & 0x8000) != 0) plusKey = true;
+            if ((GetAsyncKeyState(VK_OEM_PLUS) & 0x8000) != 0) plusKey = true;
+            if ((GetAsyncKeyState(VK_SUBTRACT) & 0x8000) != 0) minusKey = true;
+            if ((GetAsyncKeyState(VK_OEM_MINUS) & 0x8000) != 0) minusKey = true;
+
+            if (ctrlDown && plusKey) {
+                change_font_size(+1);
+                render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, false);
+                // drain possible duplicate key event
+                continue;
+            }
+            if (ctrlDown && minusKey) {
+                change_font_size(-1);
+                render(lines, row, col, filename, unixMode, showLineNumbers, showGuide, guideCol, false);
+                continue;
+            }
         }
 
         if (c == 6) { // Ctrl+F Find

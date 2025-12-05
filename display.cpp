@@ -189,3 +189,24 @@ COORD draw_prompt(const string &promptText) {
     SetConsoleCursorPosition(hOut, after);
     return after;
 }
+
+// Adjust the console font size by delta (positive to increase, negative to decrease)
+void change_font_size(int delta) {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hOut == INVALID_HANDLE_VALUE) return;
+
+    // CONSOLE_FONT_INFOEX is supported on modern Windows. Use it to get/set font size.
+    CONSOLE_FONT_INFOEX cfi;
+    ZeroMemory(&cfi, sizeof(cfi));
+    cfi.cbSize = sizeof(cfi);
+    if (!GetCurrentConsoleFontEx(hOut, FALSE, &cfi)) return;
+
+    // Adjust font height (Y). Keep X proportional or leave as-is.
+    SHORT newY = (SHORT)max(4, (int)cfi.dwFontSize.Y + delta);
+    // Optional clamp to reasonable max
+    if (newY > 200) newY = 200;
+
+    cfi.dwFontSize.Y = newY;
+    // Apply new font size
+    SetCurrentConsoleFontEx(hOut, FALSE, &cfi);
+}

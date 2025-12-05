@@ -23,3 +23,6 @@ void highlight_matches_overlay(const vector<Match>& matches, const vector<string
 
 // Draw prompt at header area and return the coordinate where user input should start
 COORD draw_prompt(const string &promptText);
+
+// Adjust the console font size by a delta (+1 to increase, -1 to decrease)
+void change_font_size(int delta);
